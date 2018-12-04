@@ -9,6 +9,7 @@ import com.engine.libs.world.CollisionMap;
 public class AABBCollisionManager {
     private GameObject obj;
     private CollisionMap world;
+    public static int MAX_UNSTUCK_TRIES = 128;
 
     public AABBCollisionManager(GameObject obj, CollisionMap world) {
         this.obj = obj;
@@ -18,10 +19,13 @@ public class AABBCollisionManager {
     public void move(double speedX, double speedY) {
         if(speedX != 0) {
             if (world.collisionWithExcept(obj.mask.shift(speedX, 0), obj.aabbComponent)) {
-                while (!world.collisionWithExcept(obj.mask.shift((int) BasicMath.sign(speedX), 0), obj.aabbComponent)) {
+                int tries = MAX_UNSTUCK_TRIES;
+                while (!world.collisionWithExcept(obj.mask.shift((int) BasicMath.sign(speedX), 0), obj.aabbComponent) &&
+                        tries > 0) {
                     obj.mask.move((int) Math.signum(speedX), 0);
 //                obj.mask.x+=(int)BasicMath.sign(speedX);
                     obj.x += BasicMath.sign(speedX);
+                    tries--;
                 }
 //                obj.mask.move(-(int) Math.signum(speedX), 0);
 //                obj.x-= Math.signum(speedX);
@@ -35,10 +39,13 @@ public class AABBCollisionManager {
 
         if(speedY != 0) {
             if (world.collisionWithExcept(obj.mask.shift(0, speedY), obj.aabbComponent)) {
-                while (!world.collisionWithExcept(obj.mask.shift(0, (int) BasicMath.sign(speedY)), obj.aabbComponent)) {
+                int tries = MAX_UNSTUCK_TRIES;
+                while (!world.collisionWithExcept(obj.mask.shift(0, (int) BasicMath.sign(speedY)), obj.aabbComponent) &&
+                        tries > 0) {
 //                obj.mask.y+=BasicMath.sign(speedY);
                     obj.mask.move(0, (int) Math.signum(speedY));
                     obj.y += BasicMath.sign(speedY);
+                    tries--;
                 }
 //                obj.mask.move(0, -(int) Math.signum(speedY));
 //                obj.y-= Math.signum(speedY);
