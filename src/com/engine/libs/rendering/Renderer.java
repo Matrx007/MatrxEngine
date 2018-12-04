@@ -226,8 +226,10 @@ public class Renderer {
         y2 -= camY;
         Graphics2D g2 = (Graphics2D) g;
         setColor(color);
+        Stroke oldStroke = g2.getStroke();
         g2.setStroke(new BasicStroke(width));
         g2.drawLine(x1, y1, x2, y2);
+        g2.setStroke(oldStroke);
     }
 
     public void drawLineWidth(double x1, double y1, double x2, double y2, int width, Color color) {
@@ -237,8 +239,10 @@ public class Renderer {
         y2 -= camY;
         Graphics2D g2 = (Graphics2D) g;
         setColor(color);
+        Stroke oldStroke = g2.getStroke();
         g2.setStroke(new BasicStroke(width));
         g2.drawLine((int)x1, (int)y1, (int)x2, (int)y2);
+        g2.setStroke(oldStroke);
     }
 
     public void fillTriangle(int x1, int y1, int x2, int y2, int x3, int y3, Color color) {
