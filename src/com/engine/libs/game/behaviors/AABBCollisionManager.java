@@ -16,6 +16,24 @@ public class AABBCollisionManager {
         this.world = world;
     }
 
+    public void moveSimple(double speedX, double speedY) {
+        for(int i = 0; i < speedX; i++) {
+            if(world.collisionWithExcept(
+                    obj.mask.shift(Math.signum(speedX)*i, 0), obj.aabbComponent)) {
+                obj.x += Math.signum(speedX)*(i-1);
+                obj.mask.move(Math.signum(speedX)*(i-1), 0);
+            }
+        }
+
+        for(int i = 0; i < speedY; i++) {
+            if(world.collisionWithExcept(
+                    obj.mask.shift(0, Math.signum(speedY)*i), obj.aabbComponent)) {
+                obj.y += Math.signum(speedY)*(i-1);
+                obj.mask.move(0, Math.signum(speedY)*(i-1));
+            }
+        }
+    }
+
     public void unstuck() {
         int tries = MAX_UNSTUCK_TRIES;
         int dirHor = -1; // -1 - UP, 1 - DOWN
