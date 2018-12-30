@@ -16,15 +16,44 @@ public class AABBCollisionManager {
         this.world = world;
     }
 
+    public void unstuck() {
+        int tries = MAX_UNSTUCK_TRIES;
+        int dirHor = -1; // -1 - UP, 1 - DOWN
+        int dirVer = -1; // -1 - LEFT, 1 - RIGHT
+        while(tries > 0) {
+            int shift = MAX_UNSTUCK_TRIES-tries;
+            // -- Attempt to find free space --
+            if(!world.collisionWithExcept(obj.mask.shift(shift*dirHor, shift*dirVer),
+                    obj.aabbComponent)) {
+                obj.mask.move(shift*dirHor, shift*dirVer);
+                obj.x += shift*dirHor;
+                obj.y += shift*dirVer;
+                break;
+            }
+
+            // -- Choose next direction --
+            dirHor++;
+            if(dirHor > 1) {
+                dirHor = -1;
+                dirVer++;
+                if(dirVer > 1) {
+                    dirVer = 0;
+                    dirHor = 0;
+                    tries--;
+                }
+            }
+        }
+    }
+
     public void move(double speedX, double speedY) {
         if(speedX != 0) {
             if (world.collisionWithExcept(obj.mask.shift(speedX, 0), obj.aabbComponent)) {
                 int tries = MAX_UNSTUCK_TRIES;
-                while (!world.collisionWithExcept(obj.mask.shift((int) BasicMath.sign(speedX), 0), obj.aabbComponent) &&
+                while (!world.collisionWithExcept(obj.mask.shift((int) BasicMath.sign(speedX)*(MAX_UNSTUCK_TRIES-tries), 0), obj.aabbComponent) &&
                         tries > 0) {
-                    obj.mask.move((int) Math.signum(speedX), 0);
+                    obj.mask.move((int) Math.signum(speedX)*(MAX_UNSTUCK_TRIES-tries), 0);
 //                obj.mask.x+=(int)BasicMath.sign(speedX);
-                    obj.x += BasicMath.sign(speedX);
+                    obj.x += BasicMath.sign(speedX)*(MAX_UNSTUCK_TRIES-tries);
                     tries--;
                 }
 //                obj.mask.move(-(int) Math.signum(speedX), 0);
@@ -40,11 +69,11 @@ public class AABBCollisionManager {
         if(speedY != 0) {
             if (world.collisionWithExcept(obj.mask.shift(0, speedY), obj.aabbComponent)) {
                 int tries = MAX_UNSTUCK_TRIES;
-                while (!world.collisionWithExcept(obj.mask.shift(0, (int) BasicMath.sign(speedY)), obj.aabbComponent) &&
+                while (!world.collisionWithExcept(obj.mask.shift(0, (int) BasicMath.sign(speedY)*(MAX_UNSTUCK_TRIES-tries)), obj.aabbComponent) &&
                         tries > 0) {
 //                obj.mask.y+=BasicMath.sign(speedY);
-                    obj.mask.move(0, (int) Math.signum(speedY));
-                    obj.y += BasicMath.sign(speedY);
+                    obj.mask.move(0, (int) Math.signum(speedY)*(MAX_UNSTUCK_TRIES-tries));
+                    obj.y += BasicMath.sign(speedY)*(MAX_UNSTUCK_TRIES-tries);
                     tries--;
                 }
 //                obj.mask.move(0, -(int) Math.signum(speedY));
