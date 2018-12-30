@@ -59,11 +59,10 @@ public class AABBCollisionManager {
 //                obj.mask.move(-(int) Math.signum(speedX), 0);
 //                obj.x-= Math.signum(speedX);
                 speedX = 0;
-            }
-            if (speedX != 0)
+            } else {
                 obj.mask.move(speedX, 0);
-//        obj.mask.x+=speedX;
-            obj.x += speedX;
+                obj.x += speedX;
+            }
         }
 
         if(speedY != 0) {
@@ -80,11 +79,10 @@ public class AABBCollisionManager {
 //                obj.y-= Math.signum(speedY);
 
                 speedY = 0;
-            }
-            if (speedY != 0)
+            } else {
                 obj.mask.move(0, speedY);
-//        obj.mask.y+=speedY;
-            obj.y += speedY;
+                obj.y += speedY;
+            }
         }
     }
 
