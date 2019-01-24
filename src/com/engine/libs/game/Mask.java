@@ -17,14 +17,14 @@ public abstract class Mask {
     public static class Rectangle extends Mask {
         public int w, h;
         public String type = "Rectangle";
-        private java.awt.Rectangle.Double rectangle;
+//        private java.awt.Rectangle.Double rectangle;
 
         public Rectangle(double x, double y, int w, int h) {
             this.w = w;
             this.h = h;
             this.x = x;
             this.y = y;
-            this.rectangle = new java.awt.Rectangle.Double(x, y, w, h);
+//            this.rectangle = new java.awt.Rectangle.Double(x, y, w, h);
         }
 
         public Rectangle(int x, int y, int w, int h) {
@@ -32,7 +32,7 @@ public abstract class Mask {
             this.h = h;
             this.x = x;
             this.y = y;
-            this.rectangle = new java.awt.Rectangle.Double(x, y, w, h);
+//            this.rectangle = new java.awt.Rectangle.Double(x, y, w, h);
         }
 
         @Override
@@ -43,10 +43,23 @@ public abstract class Mask {
 
         public boolean isColliding(Mask mask) {
             if(mask instanceof Mask.Rectangle) {
-                Mask.Rectangle rectangle = (Mask.Rectangle) mask;
-                return this.rectangle.intersects(new java.awt.Rectangle.Double(rectangle.x, rectangle.y, rectangle.w, rectangle.h));
+
+                if (x > mask.x+((Rectangle) mask).w ||
+                        x+w > mask.x+((Rectangle) mask).w) {
+                    return false;
+                }
+
+                // If one rectangle is above other
+                if (y < mask.y+((Rectangle) mask).h || y+w < mask.y) {
+                    return false;
+                }
+
+                return true;
+
+//                Mask.Rectangle rectangle = (Mask.Rectangle) mask;
+//                return this.rectangle.intersects(new java.awt.Rectangle.Double(rectangle.x, rectangle.y, rectangle.w, rectangle.h));
             } else {
-                PrintError.printMessage("Warning: Unknown shape");
+                PrintError.printMessage("Warning: Incompatible masks");
                 return false;
             }
         }
