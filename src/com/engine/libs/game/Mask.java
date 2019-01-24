@@ -41,23 +41,18 @@ public abstract class Mask {
 //            return new java.awt.Rectangle(x, y, w, h).contains(point.x, point.y);
         }
 
-        private static boolean doOverlap(Point l1, Point r1, Point l2, Point r2) {
-            if (l1.x > r2.x || l2.x > r1.x) {
-                return false;
-            }
-
-            if (l1.y < r2.y || l2.y < r1.y) {
-                return false;
-            }
-
-            return true;
+        private static boolean intersects(double Ax, double Ay, double Aw, double Ah,
+                                          double Bx, double By, double Bw, double Bh) {
+            return Bx + Bw > Ax &&
+                    By + Bh > Ay &&
+                    Ax + Aw > Bx &&
+                    Ay + Ah > By;
         }
 
         public boolean isColliding(Mask mask) {
             if(mask instanceof Mask.Rectangle) {
-                return doOverlap(new Point((int)x, (int)y), new Point((int)x+w, (int)y+h),
-                        new Point((int)mask.x, (int)mask.y), new Point((int)mask.x+((Rectangle) mask).w,
-                                (int)mask.y+((Rectangle) mask).h));
+                return intersects(x, y, w, h, mask.x, mask.y,
+                        ((Rectangle) mask).w, ((Rectangle) mask).h);
 
 //                Mask.Rectangle rectangle = (Mask.Rectangle) mask;
 //                return this.rectangle.intersects(new java.awt.Rectangle.Double(rectangle.x, rectangle.y, rectangle.w, rectangle.h));
