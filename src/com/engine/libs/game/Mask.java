@@ -3,6 +3,7 @@ package com.engine.libs.game;
 import com.engine.libs.exceptions.PrintError;
 import com.engine.libs.math.AdvancedMath;
 import com.engine.libs.math.Point;
+import com.sun.javafx.geom.Vec2d;
 
 public abstract class Mask {
     public double x, y;
@@ -50,12 +51,17 @@ public abstract class Mask {
         }
 
         public boolean isOverlapping(Mask.Rectangle other) {
-            if (y < other.y+h
-                    || y+h > other.y) {
+            Vec2d topRight = new Vec2d(x+w, y);
+            Vec2d bottomLeft = new Vec2d(x, y+h);
+            Vec2d otherTopRight = new Vec2d(other.x+other.w, other.y);
+            Vec2d otherBottomLeft = new Vec2d(other.x, other.y+other.h);
+            if (topRight.y < otherBottomLeft.y
+                    || bottomLeft.y > otherTopRight.y)) {
                 return false;
             }
-            return !(x + w < other.x)
-                    && !(x > other.x + other.w);
+            return !(topRight.x < otherBottomLeft.x)
+                    && !(bottomLeft.x > otherTopRight.x);
+            return true;
         }
 
         public boolean isColliding(Mask mask) {
