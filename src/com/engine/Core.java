@@ -1,6 +1,7 @@
 package com.engine;
 
 import com.engine.libs.game.GameObject;
+import com.engine.libs.game.Module;
 import com.engine.libs.input.Input;
 import com.engine.libs.rendering.Renderer;
 import com.engine.libs.rendering.SurfaceRenderer;
@@ -9,6 +10,7 @@ import com.engine.libs.rendering.Window;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 
 public class Core implements Runnable {
@@ -31,13 +33,14 @@ public class Core implements Runnable {
     // < 0.1.32 - MatrxEngine Pro,
     // > 0.1.38 - MatrxEngine Ultimate,
     // > 0.2.000 - MatrxEngine Gen II
-    public static final String version = "0.2.754";
+    public static final String version = "0.2.801";
     private String title = "MatrxEngine - Gen II - Version "+version;
 
     private double frameTime;
     public boolean startAsFullscreen = false;
     private int frames;
     private int fps;
+    private HashSet<Module> modules;
 
     //private Thread processConnection;
 
@@ -72,18 +75,49 @@ public class Core implements Runnable {
         return surfaceRenderer;
     }
 
+    private static Dimension getScaledDimension(Dimension imgSize, Dimension boundary) {
+        int original_width = imgSize.width;
+        int original_height = imgSize.height;
+        int bound_width = boundary.width;
+        int bound_height = boundary.height;
+        int new_width = original_width;
+        int new_height = original_height;
+
+        if (original_width > bound_width) {
+            new_width = bound_width;
+            new_height = (new_width * original_height) / original_width;
+        }
+
+        if (new_height > bound_height) {
+            new_height = bound_height;
+            new_width = (new_height * original_width) / original_height;
+        }
+
+        return new Dimension(new_width, new_height);
+    }
+
     private void startBootScreen() {
         com.engine.libs.rendering.Image image = new com.engine.libs.rendering.Image("/matrxenginebootscreen.png");
 
         Graphics2D g2 = (Graphics2D) Window.getCanvas().getGraphics();
+        System.out.println(Window.getCanvas().getWidth());
+        System.out.println(Window.getCanvas().getHeight());
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g2.setColor(Color.black);
         g2.fillRect(0, 0, Window.getCanvas().getWidth(), Window.getCanvas().getHeight());
-        g2.drawImage(image.getImage(),(getCanvas().getWidth()-image.getW())/2, (getCanvas().getHeight()-image.getH())/2, null);
-        g2.drawString(version, 8, 8);
+        int wid = Window.getCanvas().getWidth();
+        int hei = Window.getCanvas().getHeight();
+        int w = Window.getCanvas().getWidth();
+        int h = (int)(960d/1280d*(double) wid);
+        g2.drawImage(image.getImage(),-((w-wid)/2), -((h-hei)/2), w, h, null);
+        g2.setColor(Color.white);
+        g2.drawString(version, 32, 32);
 
         Renderer = new Renderer(this);
         input = new Input(this);
-
+        modules = new HashSet<>();
     }
 
     private void stopBootScreen() {

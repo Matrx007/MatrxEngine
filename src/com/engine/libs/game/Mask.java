@@ -49,10 +49,21 @@ public abstract class Mask {
                     Ay + Ah > By;
         }
 
+        public boolean isOverlapping(Mask.Rectangle other) {
+            if (y < other.y+h
+                    || y+h > other.y) {
+                return false;
+            }
+            return !(x + w < other.x)
+                    && !(x > other.x + other.w);
+        }
+
         public boolean isColliding(Mask mask) {
             if(mask instanceof Mask.Rectangle) {
-                return intersects(x, y, w, h, mask.x, mask.y,
-                        ((Rectangle) mask).w, ((Rectangle) mask).h);
+                return isOverlapping((Rectangle) mask);
+
+//                return intersects(x, y, w, h, mask.x, mask.y,
+//                        ((Rectangle) mask).w, ((Rectangle) mask).h);
 
 //                Mask.Rectangle rectangle = (Mask.Rectangle) mask;
 //                return this.rectangle.intersects(new java.awt.Rectangle.Double(rectangle.x, rectangle.y, rectangle.w, rectangle.h));

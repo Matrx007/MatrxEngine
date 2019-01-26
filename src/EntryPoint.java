@@ -19,6 +19,8 @@ public class EntryPoint extends Game {
     AbstractBody button;
 
     public EntryPoint() {
+        e.width = 1600;
+        e.height = 540;
         e.start();
 
         // TODO: Init
