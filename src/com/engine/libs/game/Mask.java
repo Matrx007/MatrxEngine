@@ -56,12 +56,11 @@ public abstract class Mask {
             Vec2d otherTopRight = new Vec2d(other.x+other.w, other.y);
             Vec2d otherBottomLeft = new Vec2d(other.x, other.y+other.h);
             if (topRight.y < otherBottomLeft.y
-                    || bottomLeft.y > otherTopRight.y)) {
+                    || bottomLeft.y > otherTopRight.y) {
                 return false;
             }
             return !(topRight.x < otherBottomLeft.x)
                     && !(bottomLeft.x > otherTopRight.x);
-            return true;
         }
 
         public boolean isColliding(Mask mask) {
