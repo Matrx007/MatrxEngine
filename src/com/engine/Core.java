@@ -125,6 +125,8 @@ public class Core implements Runnable {
     }
 
     public void run() {
+        modules.values().forEach(Module::init);
+
         stopBootScreen();
 
         double frameTime = 0;
