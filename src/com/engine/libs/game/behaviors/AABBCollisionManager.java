@@ -19,6 +19,7 @@ public class AABBCollisionManager {
     }
 
     public void unstuck() {
+        if(!(obj.mask instanceof Mask.Rectangle)) return;
         ArrayList<Mask> collisions = world.
                 collisionWithWhoExcept(obj.mask, obj.aabbComponent);
 

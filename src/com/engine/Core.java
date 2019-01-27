@@ -9,9 +9,7 @@ import com.engine.libs.rendering.Window;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 
 public class Core implements Runnable {
 
@@ -40,7 +38,8 @@ public class Core implements Runnable {
     public boolean startAsFullscreen = false;
     private int frames;
     private int fps;
-    private HashSet<Module> modules;
+    private HashMap<String, Module> modules;
+    private ArrayList<Module> modulesSortedByDepth;
 
     //private Thread processConnection;
 
@@ -117,7 +116,7 @@ public class Core implements Runnable {
 
         Renderer = new Renderer(this);
         input = new Input(this);
-        modules = new HashSet<>();
+        modules = new HashMap<>();
     }
 
     private void stopBootScreen() {
@@ -150,14 +149,13 @@ public class Core implements Runnable {
                 unprocessedTime -= UPDATE_CAP;
 
                 //TODO: Update game
-
-                /*if(!processConnection.isAlive()) {
-                    processConnection.start();
-                }*/
-
                 game.update(Core.this);
                 game.mouseX = input.mouseX;
                 game.mouseY = input.mouseY;
+
+                for (int i = modulesSortedByDepth.size()-1; i >= 0; i--) {
+                    modulesSortedByDepth.get(i).update(input);
+                }
 
                 //Iterator<GameObject> objs = game.getObjects().iterator();
 
@@ -203,8 +201,12 @@ public class Core implements Runnable {
             } else {
                 game.render(this);
             }
+            Module module;
+            for (int i = modulesSortedByDepth.size()-1; i >= 0; i--) {
+                module = modulesSortedByDepth.get(i);
+                modulesSortedByDepth.get(i).render(getRenderer(), module.x, module.y, module.width, module.height);
+            }
             if (BuildInRenderer) {
-
                 for (Iterator<GameObject> it = objects.iterator(); it.hasNext(); ) {
                     GameObject obj = it.next();
                     if (!obj.dead) {
@@ -266,5 +268,25 @@ public class Core implements Runnable {
 
     public int getFps() {
         return fps;
+    }
+
+    public void sortModules() {
+        modulesSortedByDepth.clear();
+        modulesSortedByDepth.addAll(modules.values());
+        modulesSortedByDepth.sort(Comparator.comparingInt(m -> m.depth));
+    }
+
+    public void removeModule(String name) {
+        modules.remove(name);
+        sortModules();
+    }
+
+    public Module getModule(String name) {
+        return modules.get(name);
+    }
+
+    public void addModule(String name, Module module) {
+        modules.put(name, module);
+        sortModules();
     }
 }
