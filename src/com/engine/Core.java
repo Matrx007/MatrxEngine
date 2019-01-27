@@ -117,6 +117,7 @@ public class Core implements Runnable {
         Renderer = new Renderer(this);
         input = new Input(this);
         modules = new HashMap<>();
+        modulesSortedByDepth = new ArrayList<>();
     }
 
     private void stopBootScreen() {
