@@ -81,6 +81,28 @@ public class CollisionMap {
         return false;
     }
 
+    public ArrayList<Mask> collisionWithWho(Mask mask) {
+        AABBComponent com = new AABBComponent(mask);
+        ArrayList<Mask> collisions = new ArrayList<>();
+        for(AABBComponent component : components) {
+            if(component.collides(com) && component != com) {
+                collisions.add(component.area);
+            }
+        }
+        return collisions;
+    }
+
+    public ArrayList<Mask> collisionWithWhoExcept(Mask mask, AABBComponent except) {
+        AABBComponent com = new AABBComponent(mask);
+        ArrayList<Mask> collisions = new ArrayList<>();
+        for(AABBComponent component : components) {
+            if(component.collides(com) && component != com && component != except) {
+                collisions.add(component.area);
+            }
+        }
+        return collisions;
+    }
+
     public boolean collisionWithExcept(Mask mask, AABBComponent except) {
         AABBComponent com = new AABBComponent(mask);
         for(AABBComponent component : components) {

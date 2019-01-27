@@ -6,6 +6,8 @@ import com.engine.libs.math.BasicMath;
 import com.engine.libs.math.Point;
 import com.engine.libs.world.CollisionMap;
 
+import java.util.ArrayList;
+
 public class AABBCollisionManager {
     private GameObject obj;
     private CollisionMap world;
@@ -17,31 +19,52 @@ public class AABBCollisionManager {
     }
 
     public void unstuck() {
-        int tries = MAX_UNSTUCK_TRIES;
-        int dirHor = -1; // -1 - UP, 1 - DOWN
-        int dirVer = -1; // -1 - LEFT, 1 - RIGHT
-        while(tries > 0) {
-            int shift = MAX_UNSTUCK_TRIES-tries;
-            // -- Attempt to find free space --
-            if(!world.collisionWithExcept(obj.mask.shift(shift*dirHor, shift*dirVer),
-                    obj.aabbComponent)) {
-                obj.mask.move(shift*dirHor, shift*dirVer);
-                obj.x += shift*dirHor;
-                obj.y += shift*dirVer;
-                break;
-            }
+        ArrayList<Mask> collisions = world.
+                collisionWithWhoExcept(obj.mask, obj.aabbComponent);
 
-            // -- Choose next direction --
-            dirHor++;
-            if(dirHor > 1) {
-                dirHor = -1;
-                dirVer++;
-                if(dirVer > 1) {
-                    dirVer = 0;
-                    dirHor = 0;
-                    tries--;
-                }
+        int smallestX=Integer.MAX_VALUE;
+        int smallestY=Integer.MAX_VALUE;
+        int largestX=Integer.MIN_VALUE;
+        int largestY=Integer.MIN_VALUE;
+
+        for(int i = collisions.size()-1; i >= 0; i--) {
+            Mask mask = collisions.get(i);
+            if(mask instanceof Mask.Rectangle){
+                smallestX = Math.min(smallestX, (int)mask.x);
+                smallestY = Math.min(smallestY, (int)mask.y);
+                largestX = Math.max(largestX,
+                        (int)mask.x+((Mask.Rectangle) mask).w);
+                largestY = Math.max(largestY,
+                        (int)mask.y+((Mask.Rectangle) mask).h);
             }
+        }
+
+        int currentX = (int)obj.mask.x;
+        int currentY = (int)obj.mask.y;
+
+        int distanceToLeftBorder = currentX-smallestX;
+        int distanceToRightBorder = largestX-currentX;
+        int distanceToTopBorder = currentY-smallestY;
+        int distanceToBottomBorder = largestY-currentY;
+
+        int nearestBorderX = (distanceToLeftBorder == distanceToRightBorder) ?
+                -distanceToLeftBorder :
+                (distanceToLeftBorder < distanceToRightBorder) ?
+                        -distanceToLeftBorder : distanceToRightBorder;
+        int nearestBorderY = (distanceToTopBorder == distanceToBottomBorder) ?
+                -distanceToTopBorder :
+                (distanceToTopBorder < distanceToBottomBorder) ?
+                        -distanceToTopBorder : distanceToBottomBorder;
+        if(Math.abs(nearestBorderX) < Math.abs(nearestBorderY)) {
+            obj.mask.move(nearestBorderX, 0);
+            obj.x += nearestBorderX;
+        } else if(Math.abs(nearestBorderX) > Math.abs(nearestBorderY)) {
+            obj.mask.move(0, nearestBorderY);
+            obj.y += nearestBorderY;
+        } else {
+            obj.mask.move(distanceToRightBorder, distanceToBottomBorder);
+            obj.x += distanceToRightBorder;
+            obj.y += distanceToBottomBorder;
         }
     }
 
