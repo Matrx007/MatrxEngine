@@ -15,6 +15,10 @@ public class CollisionMap {
         removeQueue= new ArrayList<>();
     }
 
+    public ArrayList<AABBComponent> getComponents() {
+        return components;
+    }
+
     public void add(AABBComponent component) {
         addQueue.add(component);
     }

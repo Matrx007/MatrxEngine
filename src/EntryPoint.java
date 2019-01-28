@@ -1,11 +1,22 @@
 import com.engine.Core;
 import com.engine.Game;
+import com.engine.libs.game.GameObject;
+import com.engine.libs.game.Mask;
+import com.engine.libs.game.behaviors.AABBCollisionManager;
+import com.engine.libs.game.behaviors.AABBComponent;
 import com.engine.libs.graphics.abstractBody.AbstractBody;
 import com.engine.libs.graphics.abstractBody.AbstractPiece;
 import com.engine.libs.graphics.abstractBody.shapes.Circle;
 import com.engine.libs.graphics.abstractBody.shapes.Rectangle;
+import com.engine.libs.input.Input;
+import com.engine.libs.rendering.Renderer;
+import com.engine.libs.world.CollisionMap;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.util.SplittableRandom;
+
+import static java.awt.event.KeyEvent.VK_T;
 
 public class EntryPoint extends Game {
     public static void main(String[] args) {
@@ -16,31 +27,90 @@ public class EntryPoint extends Game {
         new EntryPoint();
     }
 
-    AbstractBody button;
+    private Obj obj;
+    private CollisionMap collisionMap;
+    private SplittableRandom random;
 
     public EntryPoint() {
-        e.width = 1600;
-        e.height = 540;
+        e.width = 500;
+        e.height = 350;
+        e.scale = 2f;
         e.start();
 
         // TODO: Init
-        AbstractPiece[] pieces = new AbstractPiece[]{
+        collisionMap = new CollisionMap();
+        obj = new Obj(64, 64);
 
-        };
-        button = new AbstractBody(96, 96, 320, 128, pieces);
+        random = new SplittableRandom();
+        for(int i = 0; i < 10; i++) {
+            int w = random.nextInt(96)+64;
+            int h = random.nextInt(96)+64;
+            int x = e.width/4+random.nextInt(e.width/2)-w/2;
+            int y = e.height/4+random.nextInt(e.height/2)-h/2;
+            collisionMap.add(new AABBComponent(
+                    new Mask.Rectangle(x, y, w, h)));
+        }
+        collisionMap.refresh();
 
         e.run();
     }
 
     @Override
     public void update(Core e) {
-        button.w = e.getInput().getMouseX()-button.x;
-        button.h = e.getInput().getMouseY()-button.y;
+        obj.update(e.getInput());
     }
 
     @Override
     public void render(Core e) {
         e.getRenderer().fillRectangle(0, 0, e.width, e.height, Color.gray);
-        button.render(e.getRenderer());
+        collisionMap.getComponents().forEach(aabbComponent -> {
+            Mask.Rectangle mask = (Mask.Rectangle) aabbComponent.area;
+            e.getRenderer().fillRectangle(mask.x, mask.y, mask.w, mask.h, Color.blue);
+        });
+        obj.render(e.getRenderer());
+    }
+
+    private class Obj extends GameObject {
+
+        private Mask.Rectangle mask_;
+        private AABBCollisionManager cm;
+
+        public Obj(int x, int y) {
+            super(0, 0);
+            this.x = x;
+            this.y = y;
+            mask_ = new Mask.Rectangle(x, y, 48, 48);
+            this.mask = mask_;
+            this.cm = new AABBCollisionManager(this, collisionMap);
+        }
+
+        @Override
+        public void update(Input i) {
+            if(i.isButtonDown(MouseEvent.BUTTON1)) {
+                this.x = i.getMouseX();
+                this.y = i.getMouseY();
+                moveMask();
+            }
+            if(i.isKeyDown(VK_T)) {
+                cm.unstuck();
+            }
+        }
+
+        @Override
+        public void render(Renderer r) {
+            r.fillRectangle(mask_.x, mask_.y, mask_.w, mask_.h, Color.red);
+        }
+
+        private void moveMask() {
+            mask_.x = x-(double)mask_.w/2;
+            mask_.y = y-(double)mask_.h/2;
+        }
+
+        public String shareSend() {
+            return null;
+        }
+        public void shareReceive(String data) {
+
+        }
     }
 }
