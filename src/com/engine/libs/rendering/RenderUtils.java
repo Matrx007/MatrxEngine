@@ -25,24 +25,28 @@ public class RenderUtils {
     }
 
     public static BufferedImage makeCompatible(BufferedImage img) {
+        if(img == null) return null;
         BufferedImage newImage = createImage(img.getWidth(), img.getHeight());
         newImage.getGraphics().drawImage(img, 0, 0, null);
         return newImage;
     }
 
     public static BufferedImage resizeWithCompatibleImage(BufferedImage img, int width, int height) {
+        if(img == null) return null;
         BufferedImage newImage = createImage(width, height);
         newImage.getGraphics().drawImage(img, 0, 0, width, height, null);
         return newImage;
     }
 
     public static BufferedImage resize(BufferedImage img, int width, int height) {
+        if(img == null) return null;
         BufferedImage newImage = new BufferedImage(width, height, img.getType());
         newImage.getGraphics().drawImage(img, 0, 0, width, height, null);
         return newImage;
     }
 
     public static String imageToBase64(BufferedImage image) {
+        if(image == null) return null;
         String imageString = null;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -61,6 +65,7 @@ public class RenderUtils {
     }
 
     public static BufferedImage base64ToImage(String imageString) {
+        if(imageString == null) return null;
 
         BufferedImage image = null;
         byte[] imageByte;
@@ -77,6 +82,7 @@ public class RenderUtils {
     }
 
     public static BufferedImage invert(BufferedImage image) {
+        if(image == null) return null;
         BufferedImage newImage = new BufferedImage(
                 image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
         for (int x = 0; x < image.getWidth(); x++) {
@@ -94,6 +100,7 @@ public class RenderUtils {
     }
 
     public static BufferedImage colorize(BufferedImage image, Color color) {
+        if(image == null) return null;
         BufferedImage newImage = new BufferedImage(
                 image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
         for (int x = 0; x < image.getWidth(); x++) {

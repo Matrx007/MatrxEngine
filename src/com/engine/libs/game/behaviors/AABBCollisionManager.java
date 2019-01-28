@@ -43,10 +43,10 @@ public class AABBCollisionManager {
         int currentX = (int)obj.mask.x;
         int currentY = (int)obj.mask.y;
 
-        int distanceToLeftBorder = currentX-smallestX;
-        int distanceToRightBorder = largestX-currentX;
-        int distanceToTopBorder = currentY-smallestY;
-        int distanceToBottomBorder = largestY-currentY;
+        int distanceToLeftBorder = currentX-smallestX-((Mask.Rectangle) obj.mask).w/2;
+        int distanceToRightBorder = largestX-currentX+((Mask.Rectangle) obj.mask).w/2;
+        int distanceToTopBorder = currentY-smallestY-((Mask.Rectangle) obj.mask).h/2;
+        int distanceToBottomBorder = largestY-currentY+((Mask.Rectangle) obj.mask).h/2;
 
         int nearestBorderX = (distanceToLeftBorder == distanceToRightBorder) ?
                 -distanceToLeftBorder :
