@@ -9,6 +9,8 @@ import com.engine.libs.graphics.abstractBody.AbstractPiece;
 import com.engine.libs.graphics.abstractBody.shapes.Circle;
 import com.engine.libs.graphics.abstractBody.shapes.Rectangle;
 import com.engine.libs.input.Input;
+import com.engine.libs.math.AdvancedMath;
+import com.engine.libs.math.BasicMath;
 import com.engine.libs.rendering.Renderer;
 import com.engine.libs.world.CollisionMap;
 
@@ -16,6 +18,8 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.SplittableRandom;
 
+import static java.awt.event.KeyEvent.VK_C;
+import static java.awt.event.KeyEvent.VK_G;
 import static java.awt.event.KeyEvent.VK_T;
 
 public class EntryPoint extends Game {
@@ -58,6 +62,20 @@ public class EntryPoint extends Game {
     @Override
     public void update(Core e) {
         obj.update(e.getInput());
+
+        if(e.getInput().isKeyDown(VK_C)) {
+            int w = random.nextInt(96)+64;
+            int h = random.nextInt(96)+64;
+            int x = e.width/4+random.nextInt(e.width/2)-w/2;
+            int y = e.height/4+random.nextInt(e.height/2)-h/2;
+            collisionMap.add(new AABBComponent(
+                    new Mask.Rectangle(x, y, w, h)));
+            collisionMap.refresh();
+        }
+
+        if(e.getInput().isKeyDown(VK_G)) {
+            collisionMap.empty();
+        }
     }
 
     @Override
@@ -79,7 +97,7 @@ public class EntryPoint extends Game {
             super(0, 0);
             this.x = x;
             this.y = y;
-            mask_ = new Mask.Rectangle(x, y, 48, 48);
+            mask_ = new Mask.Rectangle(x-24, y-24, 48, 48);
             this.mask = mask_;
             this.cm = new AABBCollisionManager(this, collisionMap);
         }
@@ -93,6 +111,13 @@ public class EntryPoint extends Game {
             }
             if(i.isKeyDown(VK_T)) {
                 cm.unstuck();
+            }
+            if(i.isButton(MouseEvent.BUTTON3)) {
+                cm.move(i.getMouseX()-x, i.getMouseY()-y);
+                /*double angle = AdvancedMath.angle((int)x, (int)y,
+                        i.getMouseX(), i.getMouseY())+90;
+                cm.move(Math.cos(Math.toRadians(angle))*4d,
+                        Math.sin(Math.toRadians(angle))*4d);*/
             }
         }
 

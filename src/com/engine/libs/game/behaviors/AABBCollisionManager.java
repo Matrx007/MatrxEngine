@@ -20,11 +20,14 @@ public class AABBCollisionManager {
 
     public void unstuck() {
         int k = MAX_UNSTUCK_TRIES;
+        ArrayList<Mask> collisions = new ArrayList<>();
         while (k > 0 && world.collisionWithExcept(obj.mask, obj.aabbComponent)) {
             k--;
+
             if (!(obj.mask instanceof Mask.Rectangle)) return;
-            ArrayList<Mask> collisions = world.
-                    collisionWithWhoExcept(obj.mask, obj.aabbComponent);
+
+            collisions.addAll(world.collisionWithWhoExcept(
+                    obj.mask, obj.aabbComponent));
 
             int smallestX = Integer.MAX_VALUE;
             int smallestY = Integer.MAX_VALUE;
@@ -48,8 +51,8 @@ public class AABBCollisionManager {
 
             int distanceToLeftBorder = (currentX - smallestX);// + ((Mask.Rectangle) obj.mask).w;
             int distanceToRightBorder = (largestX - currentX);// + ((Mask.Rectangle) obj.mask).w;
-            int distanceToTopBorder = (currentY - smallestY);// + ((Mask.Rectangle) obj.mask).h;
-            int distanceToBottomBorder = (largestY - currentY);// + ((Mask.Rectangle) obj.mask).h;
+            int distanceToTopBorder = (currentY - smallestY)+1;// + ((Mask.Rectangle) obj.mask).h;
+            int distanceToBottomBorder = (largestY - currentY)+1;// + ((Mask.Rectangle) obj.mask).h;
 
             int nearestBorderX = (distanceToLeftBorder == distanceToRightBorder) ?
                     -distanceToLeftBorder :
