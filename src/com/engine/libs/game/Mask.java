@@ -13,6 +13,7 @@ public abstract class Mask {
     public abstract boolean isColliding(Mask mask);
     public abstract Mask shift(double shiftX, double shiftY);
     public abstract void move(double moveX, double moveY);
+    public abstract Mask expand(double amount);
 
     public static class Rectangle extends Mask {
         public int w, h;
@@ -65,6 +66,12 @@ public abstract class Mask {
             this.x += moveX;
             this.y += moveY;
         }
+
+        @Override
+        public Mask expand(double amount) {
+            return new Mask.Rectangle(x-amount, y-amount, (int)(w+amount*2), (int)(h+amount*2));
+        }
+
 
         public String toString() {
             return "x"+String.valueOf(x)+"y"+String.valueOf(y)+"w"+w+"h"+String.valueOf(h);
