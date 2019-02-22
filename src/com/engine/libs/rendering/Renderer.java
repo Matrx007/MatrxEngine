@@ -582,6 +582,11 @@ public class Renderer {
         g.drawString(text, (int)xx, (int)yy);//+size);
     }
 
+    public Rectangle getTextDimensions(String text, int size) {
+        return g.getFontMetrics(new java.awt.Font(font.getName(),
+                font.getStyle(), size)).getStringBounds(text, g).getBounds();
+    }
+
     public int getCamX() {
         return camX;
     }
