@@ -31,7 +31,7 @@ public class Core implements Runnable {
     // < 0.1.32 - MatrxEngine Pro,
     // > 0.1.38 - MatrxEngine Ultimate,
     // > 0.2.000 - MatrxEngine Gen II
-    public static final String version = "0.2.813";
+    public static final String version = "0.2.853";
     private String title = "MatrxEngine - Gen II - Version "+version;
 
     private double frameTime;

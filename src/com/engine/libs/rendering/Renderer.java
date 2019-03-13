@@ -91,6 +91,17 @@ public class Renderer {
             absolute = false;
         }
     }
+
+    public Color filterColor(Color color) {
+        Color c = g.getColor();
+        for(Filter filter : filters) {
+            if(filter != null) {
+                c = filter.filter(color, c);
+            }
+        }
+
+        return c;
+    }
     
     public void setFilter(int index, Filter filter) {
         filters[index] = filter;
