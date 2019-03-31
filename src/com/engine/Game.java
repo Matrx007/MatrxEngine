@@ -2,7 +2,6 @@ package com.engine;
 
 import com.engine.libs.game.GameObject;
 import com.engine.libs.game.renderObject;
-import com.engine.libs.networking.P2PConnection;
 import com.engine.libs.world.World;
 
 import java.util.ArrayList;
@@ -12,7 +11,6 @@ public abstract class Game {
     protected Core e;
     public World world;
     private ArrayList<renderObject> tiles;
-    public P2PConnection connection=null;
     protected int mouseX, mouseY;
 
     public Game() {

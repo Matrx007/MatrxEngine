@@ -30,6 +30,4 @@ public abstract class GameObject {
 
     public abstract void update(Input i);
     public abstract void render(Renderer r);
-    public abstract String shareSend();
-    public abstract void shareReceive(String data);
 }

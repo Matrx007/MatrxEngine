@@ -22,6 +22,8 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
     public int scroll;
     public int lastChar;
 
+    public boolean holdingShift;
+
     public Input(Core Core) {
         this.Core = Core;
         mouseX = 0;
@@ -94,6 +96,10 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
             lastKeyPressed = e.getKeyCode();
             lastKey = e.getKeyCode();
         }
+
+        if(e.isShiftDown()) {
+            holdingShift = true;
+        }
     }
 
     @Override
@@ -103,6 +109,10 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
             keys[e.getKeyCode()] = false;
             lastKeyReleased = e.getKeyCode();
 //            lastKey = -1;
+        }
+
+        if(!e.isShiftDown()) {
+            holdingShift = false;
         }
     }
 

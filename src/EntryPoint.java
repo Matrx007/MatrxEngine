@@ -41,6 +41,12 @@ public class EntryPoint extends Game {
         e.scale = 2f;
         e.start();
 
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e1) {
+            e1.printStackTrace();
+        }
+
         // TODO: Init
         collisionMap = new CollisionMap();
         obj = new Obj(64, 64);

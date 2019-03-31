@@ -31,7 +31,7 @@ public class Core implements Runnable {
     // < 0.1.32 - MatrxEngine Pro,
     // > 0.1.38 - MatrxEngine Ultimate,
     // > 0.2.000 - MatrxEngine Gen II
-    public static final String version = "0.2.853";
+    public static final String version = "0.2.854";
     private String title = "MatrxEngine - Gen II - Version "+version;
 
     private double frameTime;
@@ -99,8 +99,6 @@ public class Core implements Runnable {
         com.engine.libs.rendering.Image image = new com.engine.libs.rendering.Image("/matrxenginebootscreen.png");
 
         Graphics2D g2 = (Graphics2D) Window.getCanvas().getGraphics();
-        System.out.println(Window.getCanvas().getWidth());
-        System.out.println(Window.getCanvas().getHeight());
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);

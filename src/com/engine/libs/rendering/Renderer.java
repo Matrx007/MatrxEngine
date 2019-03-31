@@ -119,6 +119,14 @@ public class Renderer {
         filters = new Filter[filters.length];
     }
 
+    public Filter[] getFilters() {
+        return filters;
+    }
+
+    public void setFilters(Filter[] filters) {
+        this.filters = filters;
+    }
+
     public void setFont(Font font) {
         this.font = font;
     }

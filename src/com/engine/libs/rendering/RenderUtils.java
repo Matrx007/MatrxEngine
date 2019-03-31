@@ -24,10 +24,22 @@ public class RenderUtils {
         return gc.createCompatibleImage(width, height, Transparency.TRANSLUCENT);
     }
 
-    public static BufferedImage makeCompatible(BufferedImage img) {
-        if(img == null) return null;
-        BufferedImage newImage = createImage(img.getWidth(), img.getHeight());
-        newImage.getGraphics().drawImage(img, 0, 0, null);
+    public static BufferedImage makeCompatible(BufferedImage image)  {
+        GraphicsConfiguration gfxConfig = GraphicsEnvironment.
+                getLocalGraphicsEnvironment().getDefaultScreenDevice().
+                getDefaultConfiguration();
+
+        if (image.getColorModel().equals(gfxConfig.getColorModel()))
+            return image;
+
+        BufferedImage newImage = gfxConfig.createCompatibleImage(
+                image.getWidth(), image.getHeight(), image.getTransparency());
+
+        Graphics2D g2d = newImage.createGraphics();
+
+        g2d.drawImage(image, 0, 0, null);
+        g2d.dispose();
+
         return newImage;
     }
 
